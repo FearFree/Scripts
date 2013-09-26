@@ -7,16 +7,17 @@ haveProg() {
 
 if haveProg apt-get ; then func_apt-get
 elif haveProg yum ; then func_apt-yum
-elif haveProg up2date ; then func_up2date
 else
     echo 'No package manager found!'
     exit 2
 fi
 
 func_apt-get() {
-           sudo apt-get install $PACKAGES
+	echo "Apt-get package manager detected, continuing..."
+	sudo apt-get -qq install $PACKAGES
 }
 
 func_yum() {
-           sudo yum install $PACKAGES
+	echo "Yum package manager detected, continuing..."
+	sudo yum install -qq $PACKAGES
 }
