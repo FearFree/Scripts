@@ -50,6 +50,7 @@ if [ "$system" = "yum" ]
       echo "Initializing 64 Bit RHEL Based System Installation..."
 	  read -p "Non-root user to run McMyAdmin as: " mcuser
 	  read -p "Please enter password for this user (leave blank if user already exists): " mcpass
+	  read -p "Please enter the password you would like for McMyAdmin's admin user: " mcmapass
       yum update >/dev/null 2>&1
 	  yum -y -q install java-1.7.0-openjdk.x86_64
       yum -y -q install screen >/dev/null 2>&1
@@ -74,24 +75,20 @@ if [ "$system" = "yum" ]
       sudo -u $mcuser wget -q http://mcmyadmin.com/Downloads/MCMA2_glibc25.zip
       sudo -u $mcuser unzip -qq MCMA-glibc25.zip >/dev/null 2>&1
       rm -f MCMA2-glibc.zip
-	  
-      echo "Setting Up McMyAdmin Auto-Start..."
-	  cron="@reboot sh /home/$mcuser/start.sh"
-	  sudo -u $mcuser (crontab -l; echo "$cron" ) | crontab -
-	  
-	  
-      sudo -u bot cat > /home/$mcuser/start.sh << EOF
+	 
+ 	  sudo -u bot cat > /home/$mcuser/start.sh << EOF
 #!/bin/bash
 
 cd /home/$mcuser
 screen -dmS MCMA ./MCMA2_Linux_x86_64
 EOF
-      
-	  #Reboot may no longer be required
-      #echo "Automated System Reboot in 5 seconds..."
-      #sleep 5
-      #shutdown -r now
-      #Finish this....
+     
+	  echo "Setting Up McMyAdmin Auto-Start..."
+	  cron="@reboot sh /home/$mcuser/start.sh"
+	  sudo -u $mcuser (crontab -l; echo "$cron" ) | crontab -
+
+	  sudo -u $mcuser ./MCMA2_Linux_x86_64 -setpass $mcmapass -configonly
+ #Finish this....
     else
       echo "32 bit operating systems not supported, exiting"
       #Insert 32 bit yum code (future)
