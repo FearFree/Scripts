@@ -89,8 +89,9 @@ EOF
 ./MCMA2_Linux_x86_64 -nonotice -setpass $mcmapass -configonly +Java.Memory $ram +Java.VM server +McMyAdmin.FirstStart False >/dev/null 2>&1
 ./start.sh
 EOF
-		echo "Installation to this point complete.  Test and check for errors"
-		#Finish this....
+		ip=`hostname -i`
+		echo "Installation complete.  Please visit http:\\$ip:8080 in your web browser to continue."
+		#End
 	else
 		echo "32 bit operating systems not supported, exiting"
 		#Insert 32 bit yum code (future)
@@ -101,57 +102,48 @@ EOF
 #################################################################
 
 else
-  if [ "$system" = "apt" ]
-  then
-    if [ "$arch" = "64" ]
-    then
-      echo "Initializing 64 Bit Debian System Installation..."
-      #Insert 64 bit debian code
-      apt-get -y -qq update >/dev/null 2>&1
-      echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu lucid main" >> /etc/apt/sources.list
-      apt-get -y -qq update >/dev/null 2>&1
-      apt-key adv --recv-keys --keyserver keyserver.ubuntu.com key-fingerprint >/dev/null 2>&1
-      apt-get -y -qq install oracle-java7-installer --force-yes >/dev/null 2>&1
-      apt-get -y -qq install screen >/dev/null 2>&1
-      apt-get -y -qq install unzip >/dev/null 2>&1
-      cd /root
-      wget -q http://s-l.us/mcma/McMyAdmin2.zip >/dev/null 2>&1
-      unzip -qq McMyAdmin2.zip >/dev/null 2>&1
-      rm -f McMyAdmin2.zip
-      cd /usr/local
-      wget -q http://s-l.us/mcma/etc.zip >/dev/null 2>&1
-      unzip -qq etc.zip >/dev/null 2>&1
-
-      echo "Setting Up McMyAdmin Auto-Start..."
-      cat > /root/start.sh << EOF
+if [ "$system" = "apt" ]
+then
+	if [ "$arch" = "64" ]
+	then
+		echo "Initializing 64 Bit Debian System Installation..."
+		apt-get -y -qq update >/dev/null 2>&1
+		apt-get -y -qq install openjdk-7-jdk >/dev/null 2>&1
+		apt-get -y -qq install screen >/dev/null 2>&1
+		apt-get -y -qq install unzip >/dev/null 2>&1
+		cd /usr/local
+		wget -q http://s-l.us/mcma/etc.zip >/dev/null 2>&1
+		unzip -qq etc.zip >/dev/null 2>&1
+		rm -f etc.zip
+		ret=false
+		getent passwd $mcuser >/dev/null 2>&1 && ret=true
+		if $ret; then
+			echo "The non-root user you specified already exists, continuing..."
+		else
+			echo "The non-root user you specified does not yet exist, creating..."
+			adduser $mcuser
+			echo -e "$mcpass\n$mcpass" | (passwd --stdin $mcuser)
+		fi
+		cd /home/$mcuser
+			sudo -u $mcuser wget -q http://mcmyadmin.com/Downloads/MCMA2_glibc25.zip >/dev/null 2>&1
+		sudo -u $mcuser unzip -qq -o MCMA2_glibc25.zip >/dev/null 2>&1
+		rm -f MCMA2_glibc25.zip
+		echo "Setting Up McMyAdmin Auto-Start..."
+		sudo -u $mcuser cat > /home/$mcuser/start.sh << EOF
 #!/bin/bash
 
-cd /root
+cd /home/$mcuser
 screen -dmS MCMA ./MCMA2_Linux_x86_64
 EOF
-
-      cat >> /etc/crontab << EOF
- #
-@reboot root sh /root/start.sh
-#
+		chmod +x start.sh
+		cron="@reboot sh /home/$mcuser/start.sh\n"
+		sudo -u $mcuser bash <<EOF
+(crontab -l; echo "$cron" ) | crontab -
+./MCMA2_Linux_x86_64 -nonotice -setpass $mcmapass -configonly +Java.Memory $ram +Java.VM server +McMyAdmin.FirstStart False >/dev/null 2>&1
+./start.sh
 EOF
-
-    echo "Configuring McMyAdmin"
-cat >> /root/McMyAdmin.conf << EOF
- #Automated variables below
-java.memory=512
-login.username=FearFree
-mcmyadmin.licencekey=
-login.passwordmd5=60474c9c10d7142b7508ce7a50acf414
-
-limits.maxplayers=1024
-EOF
-
-      chmod -R 744 /root/
-      echo "Automated System Reboot in 5 seconds..."
-      sleep 5
-      shutdown -r now
-
+		echo "Installation complete.  Please visit http:\\$ip:8080 in your web browser to continue."
+		#End
     else
       echo "32 bit operating systems not supported, exiting."
       exit 1
