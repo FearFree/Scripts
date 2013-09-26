@@ -51,9 +51,9 @@ then
 		read -p "Non-root user to run McMyAdmin as: " mcuser
 		read -p "Please enter password for this user (leave blank if user already exists): " mcpass
 		read -p "Please enter the password you would like for McMyAdmin's admin user: " mcmapass
-		echo "Starting installation, this make take a few minutes..."
-		#read -p "How much RAM would you like to allocate to the Minecraft server, in MB (1024MB per GB): " ram
+		read -p "How much RAM would you like to allocate to the Minecraft server, in MB (1024MB per GB): " ram
 		#Add more variables as needed for MCMA config
+		echo "Starting installation, this make take a few minutes..."
 		yum -y update >/dev/null 2>&1
 		yum -y -q install java-1.7.0-openjdk.x86_64 >/dev/null 2>&1
 		yum -y -q install screen >/dev/null 2>&1
@@ -75,17 +75,19 @@ then
 		sudo -u $mcuser wget -q http://mcmyadmin.com/Downloads/MCMA2_glibc25.zip >/dev/null 2>&1
 		sudo -u $mcuser unzip -qq -o MCMA2_glibc25.zip >/dev/null 2>&1
 		rm -f MCMA2_glibc25.zip
+		echo "Setting Up McMyAdmin Auto-Start..."
 		sudo -u $mcuser cat > /home/$mcuser/start.sh << EOF
 #!/bin/bash
 
 cd /home/$mcuser
 screen -dmS MCMA ./MCMA2_Linux_x86_64
 EOF
-		echo "Setting Up McMyAdmin Auto-Start..."
+		chmod +x start.sh
 		cron="@reboot sh /home/$mcuser/start.sh\n"
 		sudo -u $mcuser bash <<EOF
 (crontab -l; echo "$cron" ) | crontab -
-./MCMA2_Linux_x86_64 -nonotice -setpass $mcmapass -configonly >/dev/null 2>&1
+./MCMA2_Linux_x86_64 -nonotice -setpass $mcmapass -configonly +Java.Memory $ram +Java.VM server +McMyAdmin.FirstStart False >/dev/null 2>&1
+./start.sh
 EOF
 		echo "Installation to this point complete.  Test and check for errors"
 		#Finish this....
