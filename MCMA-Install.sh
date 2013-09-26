@@ -51,6 +51,8 @@ if [ "$system" = "yum" ]
 	  read -p "Non-root user to run McMyAdmin as: " mcuser
 	  read -p "Please enter password for this user (leave blank if user already exists): " mcpass
 	  read -p "Please enter the password you would like for McMyAdmin's admin user: " mcmapass
+	  #read -p "How much RAM would you like to allocate to the Minecraft server, in MB (1024MB per GB): " ram
+	  #Add more variables as needed for MCMA config
       yum update >/dev/null 2>&1
 	  yum -y -q install java-1.7.0-openjdk.x86_64
       yum -y -q install screen >/dev/null 2>&1
@@ -85,9 +87,13 @@ EOF
      
 	  echo "Setting Up McMyAdmin Auto-Start..."
 	  cron="@reboot sh /home/$mcuser/start.sh"
-	  sudo -u $mcuser (crontab -l; echo "$cron" ) | crontab -
+	  sudo -u $mcuser bash <<EOF
+(crontab -l; echo "$cron" ) | crontab -
+EOF
 
-	  sudo -u $mcuser ./MCMA2_Linux_x86_64 -setpass $mcmapass -configonly
+	  sudo -u $mcuser ./MCMA2_Linux_x86_64 -nonotice -setpass $mcmapass -configonly
+	  
+	  echo "Installation to this point complete.  Test and check for errors"
  #Finish this....
     else
       echo "32 bit operating systems not supported, exiting"
