@@ -76,7 +76,7 @@ if [ "$system" = "yum" ]
       sudo -u $mcuser unzip -qq MCMA-glibc25.zip >/dev/null 2>&1
       rm -f MCMA2-glibc.zip
 	 
- 	  sudo -u bot cat > /home/$mcuser/start.sh << EOF
+ 	  sudo -u $mcuser cat > /home/$mcuser/start.sh << EOF
 #!/bin/bash
 
 cd /home/$mcuser
