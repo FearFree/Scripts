@@ -24,7 +24,7 @@ else
   if command -v apt-get update >/dev/null
   then
     system="apt"
-    echo "Apt-get Package Manager Detected"
+    echo "Apt-Get Package Manager Detected"
     sleep 1
     if [ "$arch" = "x86_64" ]
     then
@@ -54,13 +54,7 @@ if [ "$system" = "yum" ]
 	  yum -y -q install java-1.7.0-openjdk.x86_64
       yum -y -q install screen >/dev/null 2>&1
       yum -y -q install unzip >/dev/null 2>&1
-      cd /root
-	  
-	  #Do the following AFTER switching to non-root user
-      #wget the MCMA2 zip
-      #unzip -qq McMyAdmin2.zip >/dev/null 2>&1
-      #rm -f McMyAdmin2.zip
-      
+
 	  cd /usr/local
       wget http://mcmyadmin.com/Downloads/etc.zip
       unzip -qq etc.zip
@@ -70,26 +64,30 @@ if [ "$system" = "yum" ]
 	  getent passwd $mcuser >/dev/null 2>&1 && ret=true
 	  if $ret; then
 	    echo "The non-root user you specified already exists, continuing..."
-		#su to user here
 	  else
 	    echo "The non-root user you specified does not yet exist, creating..."
 		adduser $mcuser
 		echo -e "$mcpass\n$mcpass" | (passwd --stdin $mcuser)
-		#su to user here
 	  fi
+	  #Do the following with sudo -u to non-root user
+	  cd /home/$mcuser
+      sudo -u $mcuser wget -q http://mcmyadmin.com/Downloads/MCMA2_glibc25.zip
+      sudo -u $mcuser unzip -qq MCMA-glibc25.zip >/dev/null 2>&1
+      rm -f MCMA2-glibc.zip
+	  
       echo "Setting Up McMyAdmin Auto-Start..."
 	  cron="@reboot sh /home/$mcuser/start.sh"
-	  (crontab -l; echo "$cron" ) | crontab -
+	  sudo -u $mcuser (crontab -l; echo "$cron" ) | crontab -
 	  
 	  
-      cat > /home/$mcuser/start.sh << EOF
+      sudo -u bot cat > /home/$mcuser/start.sh << EOF
 #!/bin/bash
 
 cd /home/$mcuser
 screen -dmS MCMA ./MCMA2_Linux_x86_64
 EOF
       
-	  #Reboot will no longer be required
+	  #Reboot may no longer be required
       #echo "Automated System Reboot in 5 seconds..."
       #sleep 5
       #shutdown -r now
@@ -99,6 +97,10 @@ EOF
       #Insert 32 bit yum code (future)
       exit 1
     fi
+#################################################################
+#File has not been modified from legacy version below this point#
+#################################################################
+
 else
   if [ "$system" = "apt" ]
   then
