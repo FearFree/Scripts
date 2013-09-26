@@ -107,6 +107,12 @@ then
 	if [ "$arch" = "64" ]
 	then
 		echo "Initializing 64 Bit Debian System Installation..."
+		read -p "Non-root user to run McMyAdmin as: " mcuser
+		read -p "Please enter password for this user (leave blank if user already exists): " mcpass
+		read -p "Please enter the password you would like for McMyAdmin's admin user: " mcmapass
+		read -p "How much RAM would you like to allocate to the Minecraft server, in MB (1024MB per GB): " ram
+		#Add more variables as needed for MCMA config
+		echo "Starting installation, this make take a few minutes..."
 		apt-get -y -qq update >/dev/null 2>&1
 		apt-get -y -qq install openjdk-7-jdk >/dev/null 2>&1
 		apt-get -y -qq install screen >/dev/null 2>&1
