@@ -97,10 +97,6 @@ EOF
 		#Insert 32 bit yum code (future)
 		exit 1
 	fi
-#################################################################
-#File has not been modified from legacy version below this point#
-#################################################################
-
 else
 if [ "$system" = "apt" ]
 then
@@ -118,7 +114,7 @@ then
 		apt-get -y -qq install screen >/dev/null 2>&1
 		apt-get -y -qq install unzip >/dev/null 2>&1
 		cd /usr/local
-		wget -q http://s-l.us/mcma/etc.zip >/dev/null 2>&1
+		wget -q http://mcmyadmin.com/Downloads/etc.zip >/dev/null 2>&1
 		unzip -qq etc.zip >/dev/null 2>&1
 		rm -f etc.zip
 		ret=false
@@ -127,11 +123,11 @@ then
 			echo "The non-root user you specified already exists, continuing..."
 		else
 			echo "The non-root user you specified does not yet exist, creating..."
-			adduser $mcuser
-			echo -e "$mcpass\n$mcpass" | (passwd --stdin $mcuser)
+			useradd $mcuser
+			echo -e "$mcpass\n$mcpass" | (passwd $mcuser)
 		fi
 		cd /home/$mcuser
-			sudo -u $mcuser wget -q http://mcmyadmin.com/Downloads/MCMA2_glibc25.zip >/dev/null 2>&1
+		sudo -u $mcuser wget -q http://mcmyadmin.com/Downloads/MCMA2_glibc25.zip >/dev/null 2>&1
 		sudo -u $mcuser unzip -qq -o MCMA2_glibc25.zip >/dev/null 2>&1
 		rm -f MCMA2_glibc25.zip
 		echo "Setting Up McMyAdmin Auto-Start..."
