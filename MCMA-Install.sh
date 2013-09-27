@@ -89,7 +89,7 @@ cd /home/$mcuser
 screen -dmS MCMA ./MCMA2_Linux_x86_64
 EOF
 		chmod +x start.sh
-		cron="@reboot sh /home/$mcuser/start.sh\n"
+		cron="@reboot sh /home/$mcuser/start.sh"
 		sudo -u $mcuser bash <<EOF
 (crontab -l; echo "$cron" ) | crontab -
 ./MCMA2_Linux_x86_64 -nonotice -setpass $mcmapass -configonly +Java.Memory $ram +Java.VM server +McMyAdmin.FirstStart False >/dev/null 2>&1
