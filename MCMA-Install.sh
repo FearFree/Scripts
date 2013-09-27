@@ -1,4 +1,12 @@
 #!/bin/bash
+
+###################################################################
+#This script will install McMyAdmin, and all of it's dependencies.#
+#It was made for new OS installs, but can be run on any supported #
+#system.														  #
+#																  #
+#Copyright 2013 Nick Amsbaugh									  #
+###################################################################
 if [ $USER != "root" ]
 then
 	echo "You must run this script as root."
