@@ -121,7 +121,7 @@ then
 		apt-get -y -qq install unzip >/dev/null 2>&1
 		cd /usr/local
 		wget -q http://mcmyadmin.com/Downloads/etc.zip >/dev/null 2>&1
-		unzip -qq etc.zip >/dev/null 2>&1
+		unzip -o -qq etc.zip >/dev/null 2>&1
 		rm -f etc.zip
 		ret=false
 		getent passwd $mcuser >/dev/null 2>&1 && ret=true
@@ -129,8 +129,8 @@ then
 			echo "The non-root user you specified already exists, continuing..."
 		else
 			echo "The non-root user you specified does not yet exist, creating..."
-			useradd $mcuser
-			echo -e "$mcpass\n$mcpass" | (passwd $mcuser)
+			useradd -m $mcuser
+			echo $mcuser:$mcpass | chpasswd
 		fi
 		cd /home/$mcuser
 		sudo -u $mcuser wget -q http://mcmyadmin.com/Downloads/MCMA2_glibc25.zip >/dev/null 2>&1
