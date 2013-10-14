@@ -4,7 +4,7 @@
 #It was made for new OS installs, but can be run on any supported 
 #system.
 #
-#Tested on CentOS 6.4 (64 & 32 bit), Ubuntu 13.04 (64 & 32 bit), & Debian 7 (64 & 32 bit)
+#Tested on CentOS 6.4 (64 & 32 bit), CentOS 5.8 (64 & 32 bit), Ubuntu 13.04 (64 & 32 bit), & Debian 7 (64 & 32 bit)
 #
 #If you run this script more than once, be sure and check your MCMA user's crontab for duplicate entries.
 #
@@ -155,7 +155,7 @@ EOF
 		chown $mcuser:$mcuser start.sh
 		cron="@reboot sh /home/$mcuser/start.sh"
 		sudo -u $mcuser bash <<EOF
-cd ~
+cd /home/$mcuser
 (crontab -l; echo "$cron" ) | crontab -
 mono McMyAdmin.exe -nonotice -setpass $mcmapass -configonly +Java.Memory $ram +Java.VM server +McMyAdmin.FirstStart False >/dev/null 2>&1
 ./start.sh
