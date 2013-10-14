@@ -4,6 +4,8 @@
 #It was made for new OS installs, but can be run on any supported 
 #system.
 #
+#Tested on CentOS 6.4 (64 & 32 bit), Ubuntu 13.04 (64 bit), & Debian 7 (64 bit)
+#
 #If you run this script more than once, be sure and check your MCMA user's crontab for duplicate entries.
 #
 #Copyright 2013 Nick Amsbaugh
