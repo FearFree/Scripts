@@ -4,7 +4,7 @@
 #It was made for new OS installs, but can be run on any supported 
 #system.
 #
-#Tested on CentOS 6.4 (64 & 32 bit), Ubuntu 13.04 (64 bit), & Debian 7 (64 bit)
+#Tested on CentOS 6.4 (64 & 32 bit), Ubuntu 13.04 (64 & 32 bit), & Debian 7 (64 bit)
 #
 #If you run this script more than once, be sure and check your MCMA user's crontab for duplicate entries.
 #
@@ -214,9 +214,50 @@ EOF
 		echo "Installation complete.  Please visit http:\\$ip:8080 in your web browser to continue."
 		#End
     else
-      echo "32 bit operating systems not supported, exiting."
-      exit 1
-      #Insert 32 bit debian code
+        echo "32 bit operating systems are untested, proceed with caution..."
+	    echo "Initializing 32 Bit Debian System Installation..."
+	    read -p "Non-root user to run McMyAdmin as.  This can be an existing user, or one that this script will create: " mcuser
+	    read -p "Please enter password for this user (leave blank if user already exists): " mcpass
+	    read -p "Please enter the password you would like for McMyAdmin's admin user: " mcmapass
+	    read -p "How much RAM would you like to allocate to the Minecraft server, in MB (1024MB per GB): " ram
+		#Add more variables as needed for MCMA config
+		echo "Starting installation, this make take a few minutes..."
+		apt-get -y -qq install libmono-system-web2.0-cil libmono-i18n2.0-cil >/dev/null 2>&1
+		apt-get -y -qq update >/dev/null 2>&1
+		apt-get -y -qq install openjdk-7-jdk >/dev/null 2>&1
+		apt-get -y -qq install screen >/dev/null 2>&1
+		apt-get -y -qq install unzip >/dev/null 2>&1
+		
+		ret=false
+		getent passwd $mcuser >/dev/null 2>&1 && ret=true
+		if $ret; then
+			echo "The non-root user you specified already exists, continuing..."
+		else
+			echo "The non-root user you specified does not yet exist, creating..."
+			useradd -m $mcuser
+			echo $mcuser:$mcpass | chpasswd
+		fi
+		cd /home/$mcuser
+		sudo -u $mcuser wget -q http://mcmyadmin.com/Downloads/MCMA2-Latest.zip >/dev/null 2>&1
+		sudo -u $mcuser unzip -qq -o MCMA2-Latest.zip >/dev/null 2>&1
+		rm -f MCMA2-Latest.zip
+		echo "Setting Up McMyAdmin Auto-Start..."
+		sudo -u $mcuser cat > /home/$mcuser/start.sh << EOF
+#!/bin/bash
+
+cd /home/$mcuser
+screen -dmS MCMA mono McMyAdmin.exe
+EOF
+		chmod +x start.sh
+		chown $mcuser:$mcuser start.sh
+		cron="@reboot sh /home/$mcuser/start.sh"
+		sudo -u $mcuser bash <<EOF
+cd /home/$mcuser
+(crontab -l; echo "$cron" ) | crontab -
+mono McMyAdmin.exe -nonotice -setpass $mcmapass -configonly +Java.Memory $ram +Java.VM server +McMyAdmin.FirstStart False >/dev/null 2>&1
+./start.sh
+EOF
+		echo "Installation complete.  Please visit http:\\$ip:8080 in your web browser to continue."
     fi
   fi
 fi
