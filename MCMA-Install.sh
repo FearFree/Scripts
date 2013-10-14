@@ -222,8 +222,8 @@ EOF
 	    read -p "How much RAM would you like to allocate to the Minecraft server, in MB (1024MB per GB): " ram
 		#Add more variables as needed for MCMA config
 		echo "Starting installation, this make take a few minutes..."
-		apt-get -y -qq install libmono-system-web2.0-cil libmono-i18n2.0-cil >/dev/null 2>&1
 		apt-get -y -qq update >/dev/null 2>&1
+		apt-get -y -qq install libmono-system-web2.0-cil libmono-i18n2.0-cil >/dev/null 2>&1
 		apt-get -y -qq install openjdk-7-jdk >/dev/null 2>&1
 		apt-get -y -qq install screen >/dev/null 2>&1
 		apt-get -y -qq install unzip >/dev/null 2>&1
