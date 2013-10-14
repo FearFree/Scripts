@@ -114,8 +114,8 @@ EOF
 		echo "Downloading dependencies to compile Mono from source..."
 		wget -q http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 		rpm -Uvh epel-release-6-8.noarch.rpm >/dev/null 2>&1
-		yum -y -q update
-		yum -y -q install bison gettext glib2 freetype fontconfig libpng libpng-devel libX11 libX11-devel glib2-devel libgdi* libexif glibc-devel urw-fonts java unzip gcc gcc-c++ automake autoconf libtool make bzip2 wget
+		yum -y -q update >/dev/null 2>&1
+		yum -y -q install bison gettext glib2 freetype fontconfig libpng libpng-devel libX11 libX11-devel glib2-devel libgdi* libexif glibc-devel urw-fonts java unzip gcc gcc-c++ automake autoconf libtool make bzip2 wget >/dev/null 2>&1
 		cd /usr/local/src
 		wget -q http://download.mono-project.com/sources/mono/mono-2.10.8.tar.gz
 		tar zxvf mono-2.10.8.tar.gz >/dev/null 2>&1
