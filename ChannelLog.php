@@ -14,7 +14,7 @@ echo '
 ';  #Enter any HTML code you want displayed before the log between the single quotes.  This could be useful for a header.
 
 $file=file_get_contents("http://example.com/logs/channel.htm"); #Change this to the path of the raw output
-$file=explode("<br>", $file);
+$file=explode("\n", $file);
 foreach ($file as $line){
         if($line==""){
         } else {
