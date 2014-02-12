@@ -12,11 +12,11 @@ echo '<html><head>
 </head>' . "\n";
 echo '<body class="container">';
 echo '<div id="header">
-Channel log for #cajs<hr></div>
+Channel log for #channel<hr></div>
 <pre style="background-color: #f9f9f9">
 ';  #Enter any HTML code you want displayed before the log between the single quotes.  This could be useful for a header.
 
-$file=file_get_contents("http://cajs.co.uk/logs/raw/cajs.htm"); #Change this to the path of the raw output
+$file=file_get_contents("http://example.com/path/to/log.file"); #Change this to the path of the raw output
 $file=explode("\n", $file);
 foreach ($file as $line){
         if($line==""){
