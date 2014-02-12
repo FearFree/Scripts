@@ -61,7 +61,10 @@ foreach ($file as $line){
                     echo '<span class="timestamp">' . $line['0'] . '</span>';
                     echo " " . $nick['0'] . '</span>>';
                     echo " " . $line['2'] . '</span>';
-                } else {
+                        } else {
+                                echo '<span class="timestamp">' . $line['0'] . '</span>';
+                                echo " " . $nick['0'] . " " . $line['2'] . '</span>';
+                        }
             echo "\n";
         }
 }
