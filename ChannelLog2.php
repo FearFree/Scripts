@@ -1,4 +1,8 @@
 <?php
+###Set these 2 variables.
+$channel='#cajs';  #Change this to the channel name that will be displayed in the header.
+$logpath='http://cajs.co.uk/logs/raw/cajs.htm';  #Change this to your raw log file path.  Can be http(s) URL or absolute/relative file path on system (i.e. /path/to/file.log)
+
 echo '<html><head>
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.css"/>
                 <script src="//code.jquery.com/jquery.js"></script>
@@ -12,11 +16,12 @@ echo '<html><head>
 </head>' . "\n";
 echo '<body class="container">';
 echo '<div id="header">
-Channel log for #channel<hr></div>
+Channel log for ' . "$channel" . '<hr></div>'; #Change channel name
+echo '
 <pre style="background-color: #f9f9f9">
 ';  #Enter any HTML code you want displayed before the log between the single quotes.  This could be useful for a header.
 
-$file=file_get_contents("http://example.com/path/to/log.file"); #Change this to the path of the raw output
+$file=file_get_contents("$logpath"); #Change this to the path of the raw output
 $file=explode("\n", $file);
 foreach ($file as $line){
         if($line==""){
