@@ -1,7 +1,7 @@
 <?php
 ###Set these 2 variables.
-$channel='#cajs';  #Change this to the channel name that will be displayed in the header.
-$logpath='http://cajs.co.uk/logs/raw/cajs.htm';  #Change this to your raw log file path.  Can be http(s) URL or absolute/relative file path on system (i.e. /path/to/file.log)
+$channel='#channel';  #Change this to the channel name that will be displayed in the header.
+$logpath='http://example.com/path/to/file.log';  #Change this to your raw log file path.  Can be http(s) URL or absolute/relative file path on system (i.e. /path/to/file.log)
 
 echo '<html><head>
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.css"/>
